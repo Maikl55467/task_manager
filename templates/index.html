@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Task Manager</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f4f6;
+            color: #222;
+        }
+
+        /* HEADER */
+
+        header {
+            background: #1f2937;
+            color: white;
+            padding: 22px 40px;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        header p {
+            margin: 5px 0 0;
+            color: #bfc5ce;
+            font-size: 14px;
+        }
+
+
+        /* MAIN */
+
+        main {
+            max-width: 1200px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+
+        /* STATISTICS */
+
+        .statistics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 22px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+        }
+
+        .stat-title {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .stat-number {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+
+        /* ADD TASK */
+
+        .add-task {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+        }
+
+        .section-title {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full {
+            grid-column: span 2;
+        }
+
+        label {
+            margin-bottom: 7px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #6b7280;
+        }
+
+        .add-button {
+            margin-top: 20px;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            background: #2563eb;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .add-button:hover {
+            background: #1d4ed8;
+        }
+
+
+        /* FILTERS */
+
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+        }
+
+        .filters-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 15px;
+        }
+
+        .search-button {
+            margin-top: 24px;
+            padding: 11px 20px;
+            border: none;
+            border-radius: 6px;
+            background: #374151;
+            color: white;
+            cursor: pointer;
+        }
+
+        .search-button:hover {
+            background: #111827;
+        }
+
+
+        /* TABLE */
+
+        .tasks-section {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+        }
+
+        .tasks-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .tasks-header h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 14px 15px;
+            text-align: left;
+            font-size: 13px;
+            color: #6b7280;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+
+
+        /* EMPTY TABLE */
+
+        .empty-row td {
+            text-align: center;
+            padding: 60px 20px;
+            color: #9ca3af;
+        }
+
+
+        /* ACTION BUTTONS */
+
+        .actions {
+            display: flex;
+            gap: 7px;
+        }
+
+        .edit-button,
+        .delete-button {
+            padding: 7px 11px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .edit-button {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .edit-button:hover {
+            background: #e5e7eb;
+        }
+
+        .delete-button {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .delete-button:hover {
+            background: #fecaca;
+        }
+
+
+        /* RESPONSIVE */
+
+        @media (max-width: 900px) {
+
+            .statistics {
+                grid-template-columns: 1fr;
+            }
+
+            .filters-row {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: span 1;
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            header {
+                padding: 20px;
+            }
+
+            main {
+                margin-top: 20px;
+            }
+
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+
+<!-- HEADER -->
+
+<header>
+
+    <div class="header-content">
+
+        <h1>Task Manager</h1>
+
+        <p>Управление задачами</p>
+
+    </div>
+
+</header>
+
+
+<main>
+
+
+    <!-- STATISTICS -->
+
+    <section class="statistics">
+
+        <div class="stat-card">
+
+            <div class="stat-title">
+                Всего задач
+            </div>
+
+            <div class="stat-number">
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-title">
+                В процессе
+            </div>
+
+            <div class="stat-number">
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-title">
+                Завершено
+            </div>
+
+            <div class="stat-number">
+                0
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ADD TASK -->
+
+    <section class="add-task">
+        <form action="/add-task" method="POST">
+        <h2 class="section-title">
+            Добавить задачу
+        </h2>
+
+
+        <div class="form-grid">
+
+
+            <div class="form-group">
+
+                <label for="title">
+                    Название
+                </label>
+
+                <input
+                    name="title"
+                    type="text"
+                    placeholder="Введите название задачи"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="priority">
+                    Приоритет
+                </label>
+
+                <select id="priority" name="priority">
+
+                    <option value="" selected disabled>
+                        Выберите приоритет
+                    </option>
+
+                    <option value="low">
+                        Низкий
+                    </option>
+
+                    <option value="medium">
+                        Средний
+                    </option>
+
+                    <option value="high">
+                        Высокий
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group full">
+
+                <label for="description">
+                    Описание
+                </label>
+
+                <textarea
+                    name="description"
+                    placeholder="Введите описание задачи"
+                ></textarea>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="status">
+                    Статус
+                </label>
+
+                <select name="status">
+
+                    <option value="not-started" selected>
+                        Не начато
+                    </option>
+
+                    <option value="in-progress">
+                        В процессе
+                    </option>
+
+                    <option value="completed">
+                        Завершено
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="date">
+                    Дата
+                </label>
+
+                <input
+                    name="date"
+                    type="date"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="time">
+                    Время
+                </label>
+
+                <input
+                    name="time"
+                    type="time"
+                >
+
+            </div>
+
+        </div>
+
+
+        <button type="submit" class="add-button">
+            + Добавить задачу
+        </button>
+    </form>
+    </section>
+
+
+    <!-- FILTERS -->
+
+    <section class="filters">
+
+        <div class="filters-row">
+
+
+            <div class="form-group">
+
+                <label for="search">
+                    Поиск
+                </label>
+
+                <input
+                    name="search"
+                    type="text"
+                    placeholder="Поиск по названию..."
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="filter-status">
+                    Статус
+                </label>
+
+                <select name="filter-status">
+
+                    <option value="all">
+                        Все
+                    </option>
+
+                    <option value="not-started">
+                        Не начато
+                    </option>
+
+                    <option value="in-progress">
+                        В процессе
+                    </option>
+
+                    <option value="completed">
+                        Завершено
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="sort">
+                    Сортировка
+                </label>
+
+                <select name="sort">
+
+                    <option value="priority">
+                        По приоритету
+                    </option>
+
+                    <option value="date">
+                        По дате
+                    </option>
+
+                    <option value="time">
+                        По времени
+                    </option>
+
+                    <option value="title">
+                        По названию
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <button class="search-button">
+            Найти
+        </button>
+
+    </section>
+
+
+    <!-- TASKS -->
+
+    <section class="tasks-section">
+
+
+        <div class="tasks-header">
+
+            <h2>
+                Список задач
+            </h2>
+
+        </div>
+
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Название</th>
+
+                        <th>Описание</th>
+
+                        <th>Приоритет</th>
+
+                        <th>Статус</th>
+
+                        <th>Дата</th>
+
+                        <th>Время</th>
+
+                        <th>Действия</th>
+
+                    </tr>
+
+                </thead>
+
+
+                    <tbody>
+
+                    {% for task in tasks %}
+
+                    <tr>
+
+                        <td>{{ task['id'] }}</td>
+
+                        <td>{{ task['title'] }}</td>
+
+                        <td>{{ task['description'] }}</td>
+
+                        <td>{% if task['priority'] == "low" %}
+                            Низкий
+                            {% elif task['priority'] == "medium" %}
+                            Средний
+                            {% elif task['priority'] == "high" %}
+                            Высокий
+                            {% else %}
+                            Не указан
+                            {% endif %}
+                        </td>
+
+                        <td>{% if task['status'] == "not-started" %}
+                            Не начато
+                            {% elif task['status'] == "in-progress" %}
+                            В процессе
+                            {% elif task['status'] == "completed" %}
+                            Завершено
+                            {% else %}
+                            Не указан
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if task['date'] %}
+                                {{ task['date'][8:10] }}.{{ task['date'][5:7] }}.{{ task['date'][0:4] }}
+                            {% else %}
+                                Не указана
+                            {% endif %}
+                        </td>
+
+                        <td>{{ task['time'] }}</td>
+
+                        <td>
+
+                            <a href="/edit/{{ task['id'] }}" class="edit-button">
+                                Редактировать
+                            </a>
+
+                            <form action="/delete/{{ task['id'] }}" method="POST">
+
+                                <button type="submit" class="delete-button">
+                                    Удалить
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+            
+            </table>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+</body>
+
+</html>
